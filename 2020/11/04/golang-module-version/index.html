@@ -7,19 +7,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://ioridy.github.io">
-  <title>404 Not Found：该页无法显示 | Ioridy&#39;s Blog</title>
+  <title>golang中使用module管理版本(v2.x及以上的情况) | Ioridy&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="some essays and experience.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="404 Not Found：该页无法显示">
-<meta property="og:url" content="http://ioridy.github.io/404.html">
+  <meta name="description" content="一直用golang写业务代码，最近改动升级项把common module的version升级的v2，结果尴尬了，于是查了下文档，随手记录下v2.x及以后得版本的使用方法。">
+<meta name="keywords" content="golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang中使用module管理版本(v2.x及以上的情况)">
+<meta property="og:url" content="http://ioridy.github.io/2020/11/04/golang-module-version/index.html">
 <meta property="og:site_name" content="Ioridy&#39;s Blog">
-<meta property="og:description" content="some essays and experience.">
+<meta property="og:description" content="一直用golang写业务代码，最近改动升级项把common module的version升级的v2，结果尴尬了，于是查了下文档，随手记录下v2.x及以后得版本的使用方法。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-10-26T07:10:54.115Z">
+<meta property="og:updated_time" content="2020-11-04T10:03:42.750Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="404 Not Found：该页无法显示">
-<meta name="twitter:description" content="some essays and experience.">
+<meta name="twitter:title" content="golang中使用module管理版本(v2.x及以上的情况)">
+<meta name="twitter:description" content="一直用golang写业务代码，最近改动升级项把common module的version升级的v2，结果尴尬了，于是查了下文档，随手记录下v2.x及以后得版本的使用方法。">
   
     <link rel="alternative" href="/atom.xml" title="Ioridy&#39;s Blog" type="application/atom+xml">
   
@@ -157,27 +158,39 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="page-undefined" class="article article-type-page " itemscope itemprop="blogPost">
+            <article id="post-golang-module-version" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      404 Not Found：该页无法显示
+      golang中使用module管理版本(v2.x及以上的情况)
     </h1>
   
 
         
-        <a href="/404.html" class="archive-article-date">
-  	<time datetime="2020-10-26T07:10:54.115Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-10-26</time>
+        <a href="/2020/11/04/golang-module-version/" class="archive-article-date">
+  	<time datetime="2020-11-04T08:01:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-04</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>一直用golang写业务代码，最近改动升级项把common module的version升级的v2，结果尴尬了，于是查了下文档，随手记录下v2.x及以后得版本的使用方法。</p>
+<a id="more"></a>
+<p>golang中module的版本管理分路径和版本号两部分，路径是<code>go.mod</code>中开始<code>module</code>后面定义的， 而version是按照git tag获取的，两部分组合在一起决定了一个唯一的版本。</p>
+<blockquote>
+<p>PS：上面描述的version只是<code>go.mod</code>中通用的描述，其他如果没有tag，或使用commit以及时间组成一个唯一识别符等其他的情况，可以去<a href="https://docs.studygolang.com/blog/using-go-modules" target="_blank" rel="noopener">文档</a>详细了解</p>
+</blockquote>
+<h2 id="v2以下（v0-v1）"><a href="#v2以下（v0-v1）" class="headerlink" title="v2以下（v0/v1）"></a>v2以下（v0/v1）</h2><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ cat <span class="keyword">go</span>.mod</span><br><span class="line">module example.com/hello</span><br><span class="line"></span><br><span class="line"><span class="keyword">go</span> <span class="number">1.12</span></span><br><span class="line"></span><br><span class="line">require (</span><br><span class="line">    golang.org/x/text v0<span class="number">.0</span><span class="number">.0</span><span class="number">-20170915032832</span><span class="number">-14</span>c0d48ead0c  <span class="comment">//没有tag时，直接引用的是最新一个commit</span></span><br><span class="line">    rsc.io/quote v1<span class="number">.5</span><span class="number">.2</span></span><br><span class="line">    rsc.io/sampler v1<span class="number">.3</span><span class="number">.0</span>   <span class="comment">//常规</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h2 id="v2-x及以上"><a href="#v2-x及以上" class="headerlink" title="v2.x及以上"></a>v2.x及以上</h2><p>  区别于v1的版本，v2.x及以后得版本，都需要path和version匹配，及大版本需要在path中体现。</p>
+  <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ cat <span class="keyword">go</span>.mod</span><br><span class="line">module example.com/hello/v2 <span class="comment">//如果要发布v2.x的版本，这里一定要加上v2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">go</span> <span class="number">1.12</span></span><br><span class="line"></span><br><span class="line">require (</span><br><span class="line">	github.com/golang/mock v1<span class="number">.3</span><span class="number">.1</span></span><br><span class="line">	github.com/micro/<span class="keyword">go</span>-micro/v2 v2<span class="number">.3</span><span class="number">.0</span> <span class="comment">//这里是v2.3.0的版本，path中必须有v2，没有的话会报错</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>PS： v2.x以上的其他版本都一样，path必须以大版本好结束，如<code>github.com/micro/go-micro/v3 v3.0.0</code></p>
+</blockquote>
+
       
 
       
@@ -185,7 +198,29 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/record/" class="article-tag-list-link color2">record</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -235,7 +270,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://ioridy.github.io/404.html" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://ioridy.github.io/2020/11/04/golang-module-version/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -247,8 +282,39 @@
 </article>
 
   
+<nav id="article-nav">
+  
+  
+    <a href="/2020/11/02/gitlab-runner-config-for-docker-runner/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">gitlab-runner config for docker runner</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
 
 
+
+
+  
+  <!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80MDE3Ny8xNjcwNA==">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+  
 
 
           </div>
@@ -271,7 +337,7 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
