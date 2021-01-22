@@ -7,18 +7,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://ioridy.github.io">
-  <title>Archives: 2019/12 | Ioridy&#39;s Blog</title>
+  <title>golangci-lint timeout | Ioridy&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="some essays and experience.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Ioridy&#39;s Blog">
-<meta property="og:url" content="http://ioridy.github.io/archives/2019/12/index.html">
+  <meta name="description" content="在gitlab的ci里面配置了golangci-lint检查，但是偶尔总出现level=error msg=&amp;quot;Timeout exceeded: try increasing it by passing --timeout option&amp;quot;这种错误， 重新执行一次就正常了，虽然几率小，但还是会造成困扰，于是找了下问题，分享下解决方案。">
+<meta name="keywords" content="golang,golangci">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golangci-lint timeout">
+<meta property="og:url" content="http://ioridy.github.io/2021/01/22/golangci-lint-timeout/index.html">
 <meta property="og:site_name" content="Ioridy&#39;s Blog">
-<meta property="og:description" content="some essays and experience.">
+<meta property="og:description" content="在gitlab的ci里面配置了golangci-lint检查，但是偶尔总出现level=error msg=&amp;quot;Timeout exceeded: try increasing it by passing --timeout option&amp;quot;这种错误， 重新执行一次就正常了，虽然几率小，但还是会造成困扰，于是找了下问题，分享下解决方案。">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/Ioridy/images-library/master/hexo/post/golangci-lint-timeout.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/Ioridy/images-library/master/hexo/post/golangci-lint-h.jpg">
+<meta property="og:updated_time" content="2021-01-22T12:26:06.606Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ioridy&#39;s Blog">
-<meta name="twitter:description" content="some essays and experience.">
+<meta name="twitter:title" content="golangci-lint timeout">
+<meta name="twitter:description" content="在gitlab的ci里面配置了golangci-lint检查，但是偶尔总出现level=error msg=&amp;quot;Timeout exceeded: try increasing it by passing --timeout option&amp;quot;这种错误， 重新执行一次就正常了，虽然几率小，但还是会造成困扰，于是找了下问题，分享下解决方案。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Ioridy/images-library/master/hexo/post/golangci-lint-timeout.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Ioridy&#39;s Blog" type="application/atom+xml">
   
@@ -156,71 +161,162 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-golangci-lint-timeout" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/12/05/jenkins中文乱码/" class="archive-article-date">
-  	<time datetime="2019-12-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-05</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/12/05/jenkins中文乱码/">jenkins中文乱码</a>
+    <h1 class="article-title" itemprop="name">
+      golangci-lint timeout
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2021/01/22/golangci-lint-timeout/" class="archive-article-date">
+  	<time datetime="2021-01-22T12:01:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在gitlab的ci里面配置了<strong>golangci-lint</strong>检查，但是偶尔总出现<code>level=error msg=&quot;Timeout exceeded: try increasing it by passing --timeout option&quot;</code>这种错误， 重新执行一次就正常了，虽然几率小，但还是会造成困扰，于是找了下问题，分享下解决方案。</p>
+<a id="more"></a>
+<h3 id="错误"><a href="#错误" class="headerlink" title="错误"></a>错误</h3><p><img src="https://raw.githubusercontent.com/Ioridy/images-library/master/hexo/post/golangci-lint-timeout.jpg" alt="golangci-lint timeout" title="golangci-lint timeout"></p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><p>在<strong>golangci-lint</strong>运行时，加上timeout的参数设置(默认是1分钟)</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">golangci-lint <span class="builtin-name">run</span> ./<span class="built_in">..</span>. <span class="attribute">--timeout</span>=10m</span><br></pre></td></tr></table></figure>
+<p>详细的信息可以通过命令行的help查看:<code>golangci-lint run -h</code></p>
+<p><img src="https://raw.githubusercontent.com/Ioridy/images-library/master/hexo/post/golangci-lint-h.jpg" alt="golangci-lint run help" title="golangci-lint run help"></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Jenkins</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">golangci</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/经验/" class="article-tag-list-link color3">经验</a>
+        			<a href="/categories/record/" class="article-tag-list-link color2">record</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://ioridy.github.io/2021/01/22/golangci-lint-timeout/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-  
-    </div></section>
-  
 
-    
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2021/01/18/pass-object-parameters-with-url-in-http-get-request/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">http的get请求中的url中添加Object参数</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+  
+  <!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80MDE3Ny8xNjcwNA==">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+  
 
 
           </div>
@@ -243,8 +339,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
