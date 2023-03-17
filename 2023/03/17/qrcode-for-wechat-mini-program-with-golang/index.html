@@ -7,19 +7,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://ioridy.github.io">
-  <title>iFrame在iOS上宽度设置失效 | Hexo</title>
+  <title>带参数的微信小程序码服务端(golang)生成 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在用iFrame嵌套其他页面时，发现在iOS上不管怎么设置，宽度都不起作用（Android），搜索了下解决方案，记录下：">
+  <meta name="description" content="官方接口微信小程序码共有3个接口可以生成：  获取小程序码 POST https:&#x2F;&#x2F;api.weixin.qq.com&#x2F;wxa&#x2F;getwxacode?access_token&#x3D;ACCESS_TOKEN 该接口用于获取小程序码，适用于需要的码数量较少的业务场景。通过该接口生成的小程序码，永久有效，有数量限制 path参数指定扫码进入的页面，最大长度 1024 字节，不能为空可以带参数page&#x2F;ex">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iFrame在iOS上宽度设置失效">
-<meta property="og:url" content="http://ioridy.github.io/2016/08/15/iFrame%E5%9C%A8iOS%E4%B8%8A%E5%AE%BD%E5%BA%A6%E8%AE%BE%E7%BD%AE%E5%A4%B1%E6%95%88/index.html">
+<meta property="og:title" content="带参数的微信小程序码服务端(golang)生成">
+<meta property="og:url" content="http://ioridy.github.io/2023/03/17/qrcode-for-wechat-mini-program-with-golang/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="在用iFrame嵌套其他页面时，发现在iOS上不管怎么设置，宽度都不起作用（Android），搜索了下解决方案，记录下：">
+<meta property="og:description" content="官方接口微信小程序码共有3个接口可以生成：  获取小程序码 POST https:&#x2F;&#x2F;api.weixin.qq.com&#x2F;wxa&#x2F;getwxacode?access_token&#x3D;ACCESS_TOKEN 该接口用于获取小程序码，适用于需要的码数量较少的业务场景。通过该接口生成的小程序码，永久有效，有数量限制 path参数指定扫码进入的页面，最大长度 1024 字节，不能为空可以带参数page&#x2F;ex">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2016-08-15T08:51:35.000Z">
-<meta property="article:modified_time" content="2023-03-15T01:20:30.053Z">
+<meta property="article:published_time" content="2023-03-17T02:01:07.000Z">
+<meta property="article:modified_time" content="2023-03-17T02:06:06.131Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="iFrame">
+<meta property="article:tag" content="golang">
+<meta property="article:tag" content="wechat">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
@@ -158,31 +159,57 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-iFrame在iOS上宽度设置失效" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-qrcode-for-wechat-mini-program-with-golang" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      iFrame在iOS上宽度设置失效
+      带参数的微信小程序码服务端(golang)生成
     </h1>
   
 
         
-        <a href="/2016/08/15/iFrame%E5%9C%A8iOS%E4%B8%8A%E5%AE%BD%E5%BA%A6%E8%AE%BE%E7%BD%AE%E5%A4%B1%E6%95%88/" class="archive-article-date">
-  	<time datetime="2016-08-15T08:51:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-08-15</time>
+        <a href="/2023/03/17/qrcode-for-wechat-mini-program-with-golang/" class="archive-article-date">
+  	<time datetime="2023-03-17T02:01:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-17</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在用iFrame嵌套其他页面时，发现在iOS上不管怎么设置，宽度都不起作用（Android），搜索了下解决方案，记录下：<br><span id="more"></span></p>
-<p>####1.在iframe标签中，加上scrolling强制没有滚动条 （已测试OK）</p>
-<pre><code>&lt;iframe src=&quot;&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
-</code></pre><p>####2.采用width: 1px !important (暂未测试)</p>
-<p>用最高的权限改变iframe的宽（如果不用这个，子页面元素的宽会将iframe撑开），如果再需要改变iframe的宽，可以选择min-width，或者使用width:XXpx !important</p>
+        <h2 id="官方接口"><a href="#官方接口" class="headerlink" title="官方接口"></a>官方接口</h2><p>微信小程序码共有3个接口可以生成：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getQRCode.html">获取小程序码</a><br> <code>POST https://api.weixin.qq.com/wxa/getwxacode?access_token=ACCESS_TOKEN</code><br> 该接口用于获取小程序码，适用于需要的码数量较少的业务场景。通过该接口生成的小程序码，永久有效，有数量限制<blockquote>
+<p>path参数指定扫码进入的页面，最大长度 1024 字节，不能为空可以带参数<code>page/example?foo=bar</code></p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getUnlimitedQRCode.html">获取不限制的小程序码</a><br> <code>POST https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=ACCESS_TOKEN</code><br> 该接口用于获取小程序码，适用于需要的码数量极多的业务场景。通过该接口生成的小程序码，永久有效，数量暂无限制<blockquote>
+<p>page参数指定扫码进入的页面，非必要参数，不可以带参数<code>page/example</code></p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/createQRCode.html">获取小程序二维码</a><br> <code>POST https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=ACCESS_TOKEN</code><br> 获取小程序二维码，适用于需要的码数量较少的业务场景。通过该接口生成的小程序码，永久有效，有数量限制<blockquote>
+<p>path参数指定扫码进入的页面，最大长度 128 字节，不能为空，可以带参数<code>page/example?foo=bar</code></p>
+</blockquote>
+</li>
+</ol>
+<span id="more"></span>
+<p>以上3个接口之间的差异主要在于参数以及可以生成的数量， 接口1和3整体差异比较少（path参数长度不同； 小程序码和小程序二维码）,接口2生成数量不受限制，但是指定打开的页面的参数<code>page</code>不能带参数（可以考虑通过<code>scene</code>参数传递，我目前还没验证）</p>
+<blockquote>
+<p>具体的差异和参数可以通过链接查看官方文档</p>
+</blockquote>
+<h2 id="Golang实现"><a href="#Golang实现" class="headerlink" title="Golang实现"></a>Golang实现</h2><p>我根据自己的需要，选择了接口1的形式来实现，其他的接口只是接口url和参数的差异，整体流程和调用方式都是一样的。</p>
+<h3 id="获取ACCESS-TOKEN"><a href="#获取ACCESS-TOKEN" class="headerlink" title="获取ACCESS_TOKEN"></a>获取ACCESS_TOKEN</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">requestToken</span><span class="params">(appid, secret <span class="keyword">string</span>)</span> <span class="params">(<span class="keyword">string</span>, error)</span></span> &#123;</span><br><span class="line">	u, err := url.Parse(<span class="string">&quot;https://api.weixin.qq.com/cgi-bin/token&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line">	paras := &amp;url.Values&#123;&#125;</span><br><span class="line">	<span class="comment">//设置请求参数</span></span><br><span class="line">	paras.Set(<span class="string">&quot;appid&quot;</span>, appid)</span><br><span class="line">	paras.Set(<span class="string">&quot;secret&quot;</span>, secret)</span><br><span class="line">	paras.Set(<span class="string">&quot;grant_type&quot;</span>, <span class="string">&quot;client_credential&quot;</span>)</span><br><span class="line">	u.RawQuery = paras.Encode()</span><br><span class="line">	resp, err := http.Get(u.String())</span><br><span class="line">	<span class="comment">//关闭资源</span></span><br><span class="line">	<span class="keyword">if</span> resp != <span class="literal">nil</span> &amp;&amp; resp.Body != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> resp.Body.Close()</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;&quot;</span>, errors.New(<span class="string">&quot;request token err :&quot;</span> + err.Error())</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	jMap := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;)</span><br><span class="line">	err = json.NewDecoder(resp.Body).Decode(&amp;jMap)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;&quot;</span>, errors.New(<span class="string">&quot;request token response json parse err :&quot;</span> + err.Error())</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> jMap[<span class="string">&quot;errcode&quot;</span>] == <span class="literal">nil</span> || jMap[<span class="string">&quot;errcode&quot;</span>] == <span class="number">0</span> &#123;</span><br><span class="line">		accessToken, _ := jMap[<span class="string">&quot;access_token&quot;</span>].(<span class="keyword">string</span>)</span><br><span class="line">		<span class="keyword">return</span> accessToken, <span class="literal">nil</span></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">//返回错误信息</span></span><br><span class="line">		errcode := jMap[<span class="string">&quot;errcode&quot;</span>].(<span class="keyword">string</span>)</span><br><span class="line">		errmsg := jMap[<span class="string">&quot;errmsg&quot;</span>].(<span class="keyword">string</span>)</span><br><span class="line">		err = errors.New(errcode + <span class="string">&quot;:&quot;</span> + errmsg)</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;&quot;</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="获取小程序码"><a href="#获取小程序码" class="headerlink" title="获取小程序码"></a>获取小程序码</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetQRCode</span><span class="params">(id <span class="keyword">string</span>)</span> <span class="params">([]<span class="keyword">byte</span>, error)</span></span> &#123;</span><br><span class="line">	<span class="comment">//上面生成的access code 判断为空时重新请求</span></span><br><span class="line">	<span class="keyword">if</span> appAccessTokenForClient == <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">		accessToken, err := requestToken(appId, appSecret)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">		&#125;</span><br><span class="line">		appAccessTokenForClient = accessToken</span><br><span class="line">	&#125;</span><br><span class="line">	strUrl := fmt.Sprintf(<span class="string">&quot;https://api.weixin.qq.com/wxa/getwxacode?access_token=%s&quot;</span>, appAccessTokenForClient)</span><br><span class="line"></span><br><span class="line">	parm := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>)</span><br><span class="line">	parm[<span class="string">&quot;path&quot;</span>] = fmt.Sprintf(<span class="string">&quot;pages/index/index?id=%s&quot;</span>, id)</span><br><span class="line">	jsonStr, err := json.Marshal(parm)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">&quot;json Marshal QRCode paramter err :&quot;</span> + err.Error())</span><br><span class="line">	&#125;</span><br><span class="line">	req, err := http.NewRequest(<span class="string">&quot;POST&quot;</span>, strUrl, bytes.NewBuffer([]<span class="keyword">byte</span>(jsonStr)))</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">&quot;get QRCode err :&quot;</span> + err.Error())</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	req.Header.Set(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/json&quot;</span>)</span><br><span class="line">	client := &amp;http.Client&#123;&#125;</span><br><span class="line">	resp, err := client.Do(req)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">&quot;get QRCode err :&quot;</span> + err.Error())</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">defer</span> resp.Body.Close()</span><br><span class="line">	body, err := io.ReadAll(resp.Body)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">&quot;get QRCode err :&quot;</span> + err.Error())</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> body, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><p>整个过程主要在调试时比较费时间，微信接口返回的错误信息比较范，记录下主要遇到的几种问题</p>
+<h3 id="40159"><a href="#40159" class="headerlink" title="40159"></a>40159</h3><p><code>&#123;\&quot;errcode\&quot;:40159,\&quot;errmsg\&quot;:\&quot;invalid length for path, or the data is not json string hint: [Id2VBa0339xa11]\&quot;&#125;</code></p>
+<p>主要是检查传递的参数，特别是<code>path</code>对应的长度</p>
+<blockquote>
+<p>我这边是因为从接口2修改为接口1，但是<code>page</code>参数名没有修改为<code>path</code>，导致系统判断<code>path</code>为空，一直提示此错误</p>
+</blockquote>
+<h3 id="40169"><a href="#40169" class="headerlink" title="40169"></a>40169</h3><p><code>errCode: 40169 errMsg: &quot;openapi.wxacode.getUnlimited:fail invalid length for scene, or the data is not json string rid: 62764ad3-09f60c12-58046222&quot;</code></p>
+<p>接口2中<code>scene</code>参数，最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&amp;’()*+,/:;=?@-._~，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式） </p>
 
       
 
@@ -196,7 +223,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">iFrame</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">wechat</a>
         		</li>
       		
 		</ul>
@@ -208,7 +239,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/经验//" class="article-tag-list-link color3">经验</a>
+        			<a href="/categories/record//" class="article-tag-list-link color2">record</a>
         		</li>
       		
 		</ul>
@@ -263,7 +294,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://ioridy.github.io/2016/08/15/iFrame%E5%9C%A8iOS%E4%B8%8A%E5%AE%BD%E5%BA%A6%E8%AE%BE%E7%BD%AE%E5%A4%B1%E6%95%88/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://ioridy.github.io/2023/03/17/qrcode-for-wechat-mini-program-with-golang/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -277,18 +308,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2016/08/31/ASP%E9%83%A8%E7%BD%B2%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%94%99%E8%AF%AF/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          ASP部署到服务器错误
-        
-      </div>
-    </a>
   
-  
-    <a href="/2015/09/19/ASP%E8%B0%83%E7%94%A8C%E7%9A%84Dll%E9%83%A8%E7%BD%B2%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%87%BA%E9%94%99/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">ASP.NET调用C Dll部署服务器出错</div>
+    <a href="/2023/03/15/cros_put_error/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">跨域(CROS)时GET和POST正常但PUT和DELETE被阻止</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -319,8 +341,8 @@
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "http://ioridy.github.io/2016/08/15/iFrame%E5%9C%A8iOS%E4%B8%8A%E5%AE%BD%E5%BA%A6%E8%AE%BE%E7%BD%AE%E5%A4%B1%E6%95%88/", 
-    sourceId: "iFrame在iOS上宽度设置失效",
+    url: "http://ioridy.github.io/2023/03/17/qrcode-for-wechat-mini-program-with-golang/", 
+    sourceId: "qrcode-for-wechat-mini-program-with-golang",
     productKey: "8c3fb23e14854d1591628a85117f6180",
     target: "cloud-tie-wrapper"
   };
