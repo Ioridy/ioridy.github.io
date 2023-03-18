@@ -7,16 +7,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://ioridy.github.io">
-  <title>protobuf generate js by gitlab ci | Hexo</title>
+  <title>proto文件通过gitlab CI自动生成js文件 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
-<meta property="og:title" content="protobuf generate js by gitlab ci">
+  <meta name="description" content="项目使用了grpc，前端希望每次proto文件有修改时，能自动生成对应的js文件并提交到前端js文件的仓库，于是研究了下gitlab ci，做个记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="proto文件通过gitlab CI自动生成js文件">
 <meta property="og:url" content="http://ioridy.github.io/2023/03/18/protobuf-generate-js-by-gitlab-ci/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="项目使用了grpc，前端希望每次proto文件有修改时，能自动生成对应的js文件并提交到前端js文件的仓库，于是研究了下gitlab ci，做个记录。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-03-18T02:23:44.000Z">
-<meta property="article:modified_time" content="2023-03-18T02:23:44.507Z">
+<meta property="article:modified_time" content="2023-03-18T06:18:21.243Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="gitlab">
+<meta property="article:tag" content="protobuf">
+<meta property="article:tag" content="CI&#x2F;CD">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
@@ -162,7 +167,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      protobuf generate js by gitlab ci
+      proto文件通过gitlab CI自动生成js文件
     </h1>
   
 
@@ -175,7 +180,25 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>项目使用了grpc，前端希望每次proto文件有修改时，能自动生成对应的js文件并提交到前端js文件的仓库，于是研究了下gitlab ci，做个记录。</p>
+<span id="more"></span>
+<blockquote>
+<p>我这边因为用的微服务，每个服务独立一个git仓库，每个服务对应的proto文件也在各自服务的git仓库，所以通过gitlab群组的CI/CD配置定义了几个共用的变量以及整个生成的脚本，方便不同的服务仓库共享。</p>
+</blockquote>
+<h2 id="生成脚本"><a href="#生成脚本" class="headerlink" title="生成脚本"></a>生成脚本</h2><h3 id="proto生成js的命令"><a href="#proto生成js的命令" class="headerlink" title="proto生成js的命令"></a>proto生成js的命令</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protoc <span class="attribute">--proto_path</span>=. <span class="attribute">--proto_path</span>=../../../protobuf   <span class="attribute">--js_out</span>=import_style=commonjs,binary:.  <span class="attribute">--grpc-web_out</span>=import_style=typescript,mode=grpcweb:.  xxx/xxxx.proto</span><br></pre></td></tr></table></figure>
+<h3 id="根据git的修改记录生成对应的js文件"><a href="#根据git的修改记录生成对应的js文件" class="headerlink" title="根据git的修改记录生成对应的js文件"></a>根据git的修改记录生成对应的js文件</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">files</span>=$(git diff --name-only HEAD~ | grep <span class="string">&#x27;\.proto&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> filePath <span class="keyword">in</span> <span class="variable">$files</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    protoc <span class="attribute">--proto_path</span>=. <span class="attribute">--proto_path</span>=../../../protobuf   <span class="attribute">--js_out</span>=import_style=commonjs,binary:.  <span class="attribute">--grpc-web_out</span>=import_style=typescript,mode=grpcweb:.  <span class="variable">$filePath</span></span><br><span class="line">done;</span><br></pre></td></tr></table></figure>
+<h3 id="提交新生成的js文件到git仓库"><a href="#提交新生成的js文件到git仓库" class="headerlink" title="提交新生成的js文件到git仓库"></a>提交新生成的js文件到git仓库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tsFiles=$(find ./ -name *.ts -<span class="built_in">type</span> f)</span><br><span class="line">git <span class="built_in">clone</span> --depth 1 --branch master <span class="variable">$TS_PROTO_REPOSITORY_ADDR</span></span><br><span class="line"><span class="keyword">for</span> tsfilePath <span class="keyword">in</span> <span class="variable">$tsFiles</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;----cp <span class="variable">$tsfilePath</span>------&quot;</span></span><br><span class="line">    cp --parents <span class="variable">$tsfilePath</span> ./<span class="variable">$TS_PROTO_REPOSITORY_NAME</span></span><br><span class="line"><span class="keyword">done</span>;</span><br><span class="line"><span class="built_in">cd</span> ./<span class="variable">$TS_PROTO_REPOSITORY_NAME</span>/</span><br><span class="line">git add .;</span><br><span class="line">git commit -m <span class="string">&quot;ci通过<span class="variable">$&#123;CI_PROJECT_PATH&#125;</span>中<span class="variable">$&#123;GITLAB_USER_NAME&#125;</span>的提交<span class="variable">$&#123;CI_COMMIT_SHORT_SHA&#125;</span>同步&quot;</span> -m <span class="string">&quot;<span class="variable">$&#123;CI_COMMIT_MESSAGE&#125;</span>&quot;</span> || <span class="literal">true</span>;</span><br><span class="line">git push;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>$TS_PROTO_REPOSITORY_NAME</code> 是gitlab的CI/CD中定义的要提交生成js文件的git仓库地址</li>
+<li><code>$TS_PROTO_REPOSITORY_NAME</code> 是gitlab的CI/CD中定义的要提交生成js文件的git仓库名称<h2 id="gitlab-ci配置"><a href="#gitlab-ci配置" class="headerlink" title="gitlab ci配置"></a>gitlab ci配置</h2><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ts:</span><br><span class="line">  stage: build</span><br><span class="line">  only:</span><br><span class="line">    -<span class="ruby"> master</span></span><br><span class="line"><span class="ruby">  <span class="symbol">extends:</span> </span></span><br><span class="line"><span class="ruby">    - .template</span></span><br><span class="line"><span class="ruby">  <span class="symbol">script:</span> </span></span><br><span class="line"><span class="ruby">    - chmod +x <span class="variable">$GENERATE_TS_BY_PROTO</span>_SCRIPT</span></span><br><span class="line"><span class="ruby">    - <span class="variable">$GENERATE_TS_BY_PROTO</span>_SCRIPT</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><code>$GENERATE_TS_BY_PROTO_SCRIPT</code>是在gitlab的CI/CD配置中，配置的一个文件类型的变量，主要是把上面的shell脚本整合在一个文件里面，定义在gitlab的群组里面，群组下面的所有git仓库（我是微服务，每个服务一个独立的git仓库）可以共用。</p>
+<blockquote>
+<p>配置文件类型的变量需要特别注意，不能勾选<code>Expand variable reference</code>这个选项，否则脚本中定义的变量会被提前扩展出来（扩展的时候脚本没执行，没有值），导致脚本执行失败。</p>
+</blockquote>
+<p>下面是<code>$GENERATE_TS_BY_PROTO_SCRIPT</code>的完整内容：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">&quot;<span class="subst">$(git diff --name-only HEAD~ | grep &#x27;\.proto&#x27;)</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;no proto file changed!&quot;</span></span><br><span class="line">    <span class="built_in">exit</span> 0</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">files=$(git diff --name-only HEAD~ | grep <span class="string">&#x27;\.proto&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> filePath <span class="keyword">in</span> <span class="variable">$files</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    protoc --proto_path=. --proto_path=../../../protobuf   --js_out=import_style=commonjs,binary:.  --grpc-web_out=import_style=typescript,mode=grpcweb:.  <span class="variable">$filePath</span></span><br><span class="line"><span class="keyword">done</span>;</span><br><span class="line">tsFiles=$(find ./ -name *.ts -<span class="built_in">type</span> f)</span><br><span class="line">git <span class="built_in">clone</span> --depth 1 --branch master <span class="variable">$TS_PROTO_REPOSITORY_ADDR</span></span><br><span class="line"><span class="keyword">for</span> tsfilePath <span class="keyword">in</span> <span class="variable">$tsFiles</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;----cp <span class="variable">$tsfilePath</span>------&quot;</span></span><br><span class="line">    cp --parents <span class="variable">$tsfilePath</span> ./<span class="variable">$TS_PROTO_REPOSITORY_NAME</span></span><br><span class="line"><span class="keyword">done</span>;</span><br><span class="line"><span class="built_in">cd</span> ./<span class="variable">$TS_PROTO_REPOSITORY_NAME</span>/</span><br><span class="line">git add .;</span><br><span class="line">git commit -m <span class="string">&quot;ci通过<span class="variable">$&#123;CI_PROJECT_PATH&#125;</span>中<span class="variable">$&#123;GITLAB_USER_NAME&#125;</span>的提交<span class="variable">$&#123;CI_COMMIT_SHORT_SHA&#125;</span>同步&quot;</span> -m <span class="string">&quot;<span class="variable">$&#123;CI_COMMIT_MESSAGE&#125;</span>&quot;</span> || <span class="literal">true</span>;</span><br><span class="line">git push;</span><br></pre></td></tr></table></figure></p>
+
       
 
       
@@ -183,7 +206,37 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">gitlab</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">protobuf</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">CI/CD</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/record//" class="article-tag-list-link color2">record</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -400,6 +453,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
@@ -408,11 +465,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Windows</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSS</a>
+                <a href="javascript:void(0)" class="js-tag color4">Sketchup</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -421,14 +482,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">sts</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Sketchup</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Windows</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -464,11 +517,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">golangci</a>
+                <a href="javascript:void(0)" class="js-tag color5">grpc</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">grpc</a>
+                <a href="javascript:void(0)" class="js-tag color4">golangci</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -480,7 +533,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">base64</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">image</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Jenkins</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Mobile</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">H5</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -496,27 +569,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">base64</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">image</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Mobile</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">H5</a>
+                <a href="javascript:void(0)" class="js-tag color1">CI/CD</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">wechat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">stackoverflow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -525,10 +586,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">markdown</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">stackoverflow</a>
               </li>
             
             <div class="clearfix"></div>
